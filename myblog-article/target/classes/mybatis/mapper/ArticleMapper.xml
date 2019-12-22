@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjl.myblog.repository.ArticleMapper">
+
+    <sql id="articleQuery">
+        SELECT A.*,B.user_name,C.articletype_name
+        FROM tb_article A LEFT  JOIN  tb_user B  ON A.article_authid=B.id
+        LEFT JOIN tb_articletype C ON A.article_typeid=C.id
+    </sql>
+    <resultMap id="articleMap" type="com.zjl.myblog.dto.ArticleDto">
+        <association property="articleDO" javaType="com.zjl.myblog.domain.ArticleDO">
+            <result property="id" column="id"/>
+            <result property="articleTitle" column="article_title"/>
+            <result property="articleContent" column="article_content"/>
+            <result property="articleSendTime" column="article_sendtime"/>
+            <result property="articleCount" column="article_count"/>
+            <result property="articleFrom" column="article_from"/>
+            <result property="articleInfo" column="article_info"/>
+        </association>
+        <association property="userDO" javaType="com.zjl.myblog.domain.UserDO">
+            <result property="userName" column="user_name"/>
+        </association>
+        <association property="articleTypeDO" javaType="com.zjl.myblog.domain.ArticleTypeDO">
+            <result property="articleTypeName" column="articletype_name"/>
+        </association>
+    </resultMap>
+    <select id="findArticleById" parameterType="java.lang.Integer" resultMap="articleMap">
+        <include refid="articleQuery"/>
+        <where>
+            A.id=#{id}
+        </where>
+    </select>
+    <update id="updateArticle" parameterType="com.zjl.myblog.domain.ArticleDO">
+        update tb_article A
+        <set>
+            <if test="articleTitle!=null and articleTitle!=''">
+                A.article_title=#{articleTitle},
+            </if>
+            <if test="articleCount!=null and articleCount!=''">
+                A.article_count=#{articleCount},
+            </if>
+            <if test="articleContent!=null and articleContent!=''">
+                A.article_content=#{articleContent},
+            </if>
+            <if test="articleInfo!=null and articleInfo!=''">
+                A.article_info=#{articleInfo},
+            </if>
+            <if test="articleTypeId!=null and articleTypeId!=''">
+                A.article_typeid=#{articleInfo}
+            </if>
+        </set>
+        <where>
+            A.id=#{id}
+        </where>
+    </update>
+    <insert id="saveArticle" parameterType="com.zjl.myblog.domain.ArticleDO" useGeneratedKeys="true" keyProperty="id">
+      insert into tb_article  (article_typeid,article_title,article_content,article_sendtime,article_authid,article_count,article_from,article_info)
+        values (#{articleTypeId},#{articleTitle},#{articleContent},#{articleSendTime},#{articleAuthId},#{articleCount},#{articleFrom},#{articleInfo})
+    </insert>
+
+    <select id="listArticleByTime" parameterType="com.zjl.myblog.dto.ArticleDto" resultMap="articleMap">
+        <include refid="articleQuery"/>
+        <where>
+            A.id=#{articleDO.articleSendTime}
+        </where>
+    </select>
+
+    <select id="listArticleByContentAndTitle" parameterType="com.zjl.myblog.query.ArticleQuery" resultMap="articleMap">
+        <include refid="articleQuery"/>
+        <where>
+            CONCAT(IFNULL(article_title,''),IFNULL(article_content,''))
+            LIKE  CONCAT('%',#{key},'%')
+        </where>
+    </select>
+
+    <select id="listArticleByType"  parameterType="com.zjl.myblog.query.ArticleQuery" resultMap="articleMap">
+        <include refid="articleQuery"/>
+        <where>
+            A.article_typeid=#{articleDto.articleDO.articleTypeId}
+        </where>
+    </select>
+</mapper>

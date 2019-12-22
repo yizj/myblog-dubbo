@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjl.myblog.repository.ArticleTypeMapper">
+
+    <insert id="saveArticleType" parameterType="com.zjl.myblog.domain.ArticleTypeDO">
+       insert into tb_articletype (pid,articletype_name,articletype_desc)
+       values (#{pid},#{articleTypeName},#{articleTypeDesc})
+    </insert>
+
+    <select id="getArticleTypeByPid" parameterType="com.zjl.myblog.domain.ArticleTypeDO" resultType="com.zjl.myblog.domain.ArticleTypeDO">
+        select * from tb_articletype
+        <where>
+            pid=#{pid}
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,37 @@
+server:
+  port: 8088
+
+#redis配置
+spring:
+  application:
+    name: myblog-manage
+  redis:
+    host: 101.200.61.210
+    database: 0
+    port: 6379
+    password: hxl#101095
+    jedis:
+      pool:
+        min-idle: 0
+        max-idle: 8
+        max-active: 8
+        max-wait: -1ms
+    timeout: 3000ms
+#activemq
+  activemq:
+    user: admin
+    password: admin
+    broker-url: tcp://101.200.61.210:61616
+    pool:
+      enabled: true
+      max-connections: 10
+      idle-timeout: 30000ms
+dubbo:
+  application:
+    name: myblog-manage
+  registry:
+    address: 101.200.61.210:2181
+    protocol: zookeeper
+  protocol:
+    name: dubbo
+    port: 20880

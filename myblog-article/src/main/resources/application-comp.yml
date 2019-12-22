@@ -1,0 +1,38 @@
+server:
+  port: 8087
+
+#数据库配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: root
+    url: jdbc:mysql://127.0.0.1:3306/blog?useAffectedRows=true
+  jpa:
+    show-sql: true
+dubbo:
+  application:
+    name: myblog-manage
+  registry:
+    address: 101.200.61.210:2181
+    protocol: zookeeper
+  protocol:
+    name: dubbo
+    port: 20880
+#mybatis
+mybatis:
+  config-location: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
+logging:
+  level:
+    com:
+     zjl:
+       myblog:
+         repository: DEBUG
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: countSql
+
+
